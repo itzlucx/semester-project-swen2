@@ -1,0 +1,16 @@
+# NPM Logs
+*.log
+npm-debug.log*
+
+# Unit Test Reports
+coverage/
+
+# Betriebssystem & IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Other
+node_modules/
+.angular/
+dist/
