@@ -1,0 +1,24 @@
+<div class="tour-grid">
+
+    @for (tour of tours; track tour.id) {
+        
+            <mat-card class="tour-card">
+                <mat-card-header>
+                    <mat-card-title>
+                        <h3 class="tour-name">{{ tour.name }} </h3>
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p class="tour-description"> {{ tour.description }} </p>
+                    <p class="tour-distance"> {{ tour.distance }} </p>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button color="primary" [routerLink]="['/tour', tour.id]">Details</button>
+                </mat-card-actions>
+            </mat-card>
+            
+    } @empty {
+        <p>Es wurden noch keine Touren erstellt.</p>
+    }
+
+</div>
