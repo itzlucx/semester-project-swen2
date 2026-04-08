@@ -1,0 +1,15 @@
+@if (tour) {
+    <div class="detail container">
+        <h1> {{ tour.name }} </h1>
+        <div class="info-box">
+            <p><strong>Distanz:</strong> {{ tour.distance }}km </p>
+            <p><strong>Dauer:</strong> {{ tour.estimatedTime }}h </p>
+            <p><strong>Beschreibung:</strong> {{ tour.description }} </p>
+        </div>
+    </div>
+} @else {
+    <div class="error-container">
+        <h1>Tour nicht gefunden!</h1>
+        <p>Sorry, diese Tour existiert nicht.</p>
+    </div>
+}
