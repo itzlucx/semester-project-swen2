@@ -7,10 +7,13 @@
             <p><strong>Beschreibung:</strong> {{ tour.description }} </p>
         </div>
     </div>
-    <div class="anderes">
-    <button>Edit Tour</button>
-    <button>Delete Tour</button>
-</div>
+    <div class="action-buttons">
+        <div class="danger-zone">
+            <button mat-raised-button color="accent">Bearbeiten</button>
+            <button mat-raised-button color="warn" (click)="onDelete()">Löschen</button>
+        </div>
+        <button mat-button routerLink="/home">Back</button>
+    </div>
 } @else {
     <div class="error-container">
         <h1>Tour nicht gefunden!</h1>

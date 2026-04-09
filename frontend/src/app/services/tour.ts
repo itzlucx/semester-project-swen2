@@ -36,4 +36,9 @@ export class TourService {
     this.mockTours.push(newTour);
     console.log('Tour hinzugefügt! Aktuelle Touren:', this.mockTours);
   }
+
+  deleteTour(id: number): void {
+    this.mockTours = this.mockTours.filter(t => t.id !== id);
+    console.log('Tour gelöscht. Verbleibend:', this.mockTours.length);
+  }
 }
