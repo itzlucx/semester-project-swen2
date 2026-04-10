@@ -1,0 +1,18 @@
+.create-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.tour-log-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

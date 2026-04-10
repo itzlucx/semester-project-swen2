@@ -1,0 +1,76 @@
+<div class="create-container">
+  <h1>Neuen Tour Log erstellen</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tour-log-form">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Datum & Uhrzeit</mat-label>
+      <input matInput type="datetime-local" formControlName="dateTime">
+
+      @if (this.form.controls["dateTime"].hasError('required')) {
+        <mat-error>Datum und Uhrzeit sind erforderlich.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Kommentar</mat-label>
+      <textarea matInput formControlName="comment" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Schwierigkeit</mat-label>
+      <mat-select formControlName="difficulty">
+        <mat-option value="easy">Easy</mat-option>
+        <mat-option value="medium">Medium</mat-option>
+        <mat-option value="hard">Hard</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Distanz (in km)</mat-label>
+      <input matInput type="number" formControlName="totalDistanceKm">
+
+      @if (this.form.controls["totalDistanceKm"].hasError('required')) {
+        <mat-error>Die Distanz ist ein Pflichtfeld.</mat-error>
+      }
+      @if (this.form.controls["totalDistanceKm"].hasError('min')) {
+        <mat-error>Die Distanz muss größer als 0 sein.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Dauer (in Minuten)</mat-label>
+      <input matInput type="number" formControlName="totalTimeMin">
+
+      @if (this.form.controls["totalTimeMin"].hasError('required')) {
+        <mat-error>Die Dauer ist ein Pflichtfeld.</mat-error>
+      }
+      @if (this.form.controls["totalTimeMin"].hasError('min')) {
+        <mat-error>Die Dauer muss größer als 0 sein.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Rating (1–5)</mat-label>
+      <input matInput type="number" formControlName="rating">
+
+      @if (this.form.controls["rating"].hasError('required')) {
+        <mat-error>Rating ist erforderlich.</mat-error>
+      }
+      @if (this.form.controls["rating"].hasError('min') || this.form.controls["rating"].hasError('max')) {
+        <mat-error>Rating muss zwischen 1 und 5 liegen.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-button type="button" (click)="onCancel()">
+        Abbrechen
+      </button>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+        Tour Log speichern
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -12,6 +12,10 @@
             <button mat-raised-button color="accent">Bearbeiten</button>
             <button mat-raised-button color="warn" (click)="onDelete()">Löschen</button>
         </div>
+      <br>
+        <div class="create-log">
+          <button mat-raised-button color="accent" [routerLink]="['/tour', tour.id, 'new-log']">Tour-log erstellen</button>
+        </div>
         <button mat-button routerLink="/home">Back</button>
     </div>
 } @else {
