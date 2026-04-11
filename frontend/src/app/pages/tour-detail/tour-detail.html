@@ -18,6 +18,9 @@
         </div>
         <button mat-button routerLink="/home">Back</button>
     </div>
+  <div class="tour-logs-list">
+    <app-tour-log-list [tourId]="tour.id"></app-tour-log-list>
+  </div>
 } @else {
     <div class="error-container">
         <h1>Tour nicht gefunden!</h1>

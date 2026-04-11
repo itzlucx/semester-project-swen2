@@ -1,0 +1,27 @@
+<div class="log-list">
+  <h2>Tour Logs</h2>
+
+  @if (logs().length === 0) {
+    <p>Keine Logs vorhanden.</p>
+  }
+
+  @for (log of logs(); track log.id) {
+    <div class="log-item">
+
+      <p><strong>Datum:</strong> {{ log.dateTime }}</p>
+      <p><strong>Kommentar:</strong> {{ log.comment }}</p>
+      <p><strong>Distanz:</strong> {{ log.totalDistance }} km</p>
+      <p><strong>Dauer:</strong> {{ log.totalTime }} min</p>
+      <p><strong>Rating:</strong> {{ log.rating }}</p>
+
+      <button mat-button color="primary" (click)="onEdit(log.id)">
+        Bearbeiten
+      </button>
+
+      <button mat-button color="warn" (click)="onDelete(log.id)">
+        Löschen
+      </button>
+
+    </div>
+  }
+</div>

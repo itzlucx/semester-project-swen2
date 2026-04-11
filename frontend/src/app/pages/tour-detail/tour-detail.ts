@@ -4,10 +4,11 @@ import { TourService } from '../../services/tour';
 import { Tour } from '../../models/tour.model';
 
 import { MatButtonModule } from '@angular/material/button';
+import { TourLogList } from '../../components/tour-log-list/tour-log-list';
 
 @Component({
   selector: 'app-tour-detail',
-  imports: [MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink, TourLogList],
   templateUrl: './tour-detail.html',
   styleUrl: './tour-detail.css',
 })

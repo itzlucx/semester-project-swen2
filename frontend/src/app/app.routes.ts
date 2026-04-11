@@ -9,5 +9,6 @@ export const routes: Routes = [
   { path: 'home', component: Home },
   { path: 'tour/create', component: TourCreate },
   { path: 'tour/:id', component: TourDetail },
-  { path: 'tour/:id/new-log', component: TourLogCreate }
+  { path: 'tour/:tourId/new-log', component: TourLogCreate },
+  { path: 'tour/:tourId/log/:logId/edit', component: TourLogCreate }
 ];
