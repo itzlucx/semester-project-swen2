@@ -57,10 +57,12 @@ export class TourService {
   }
 
   updateTour(id: number, updatedData: Partial<Tour>): void {
+    console.log('Service empfängt zum Speichern:', updatedData);
     // Index der Tour im Array suchen
     const index = this.mockTours.findIndex(t => t.id === id);
+    console.log('Service findet Tour an Array-Position (Index):', index);
 
-    if (index !== 1) {
+    if (index !== -1) {
       this.mockTours[index] = { ...this.mockTours[index], ...updatedData, id: id };
       console.log('Tour aktualisiert:', this.mockTours[index]);
     }

@@ -54,6 +54,10 @@ export class TourCreate {
   }
 
   onSubmit() {
+    // ***DEBUG***
+    console.log('Formular valid?', this.tourForm.valid);
+    console.log('ID Datentyp:', typeof this.editTourId, '| Wert:', this.editTourId);
+    
     if (this.tourForm.valid) {
       if (this.isEditMode && this.editTourId) {
         // Bearbeitung -> Update aufrufen
