@@ -41,4 +41,14 @@ export class TourService {
     this.mockTours = this.mockTours.filter(t => t.id !== id);
     console.log('Tour gelöscht. Verbleibend:', this.mockTours.length);
   }
+
+  updateTour(id: number, updatedData: Partial<Tour>): void {
+    // Index der Tour im Array suchen
+    const index = this.mockTours.findIndex(t => t.id === id);
+
+    if (index !== 1) {
+      this.mockTours[index] = { ...this.mockTours[index], ...updatedData, id: id };
+      console.log('Tour aktualisiert:', this.mockTours[index]);
+    }
+  }
 }

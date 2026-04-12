@@ -1,5 +1,10 @@
 <div class="create-container">
+
+  @if (isEditMode) {
+    <h1>Tour bearbeiten</h1>
+  } @else {
     <h1>Neue Tour erstellen</h1>
+  }
 
     <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="tour-form">
         <mat-form-field appearance="fill">
@@ -36,7 +41,7 @@
       <button mat-button type="button" routerLink="/home">Abbrechen</button>
       
       <button mat-raised-button color="primary" type="submit" [disabled]="tourForm.invalid">
-        Tour speichern
+        {{ isEditMode ? 'Änderungen speichern' : 'Tour speichern'}}
       </button>
     </div>
     </form>
