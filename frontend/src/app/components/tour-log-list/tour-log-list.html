@@ -1,27 +1,36 @@
 <div class="log-list">
   <h2>Tour Logs</h2>
-
   @if (logs().length === 0) {
-    <p>Keine Logs vorhanden.</p>
-  }
-
-  @for (log of logs(); track log.id) {
-    <div class="log-item">
-
-      <p><strong>Datum:</strong> {{ log.dateTime }}</p>
-      <p><strong>Kommentar:</strong> {{ log.comment }}</p>
-      <p><strong>Distanz:</strong> {{ log.totalDistance }} km</p>
-      <p><strong>Dauer:</strong> {{ log.totalTime }} min</p>
-      <p><strong>Rating:</strong> {{ log.rating }}</p>
-
-      <button mat-button color="primary" (click)="onEdit(log.id)">
-        Bearbeiten
-      </button>
-
-      <button mat-button color="warn" (click)="onDelete(log.id)">
-        Löschen
-      </button>
-
+    <div class="empty-state">
+      <p>Noch keine Logs vorhanden. Zeit für die erste Tour!</p>
     </div>
   }
+
+  <div class="logs-container">
+    @for (log of logs(); track log.id) {
+      <div class="log-item">
+        
+        <div class="log-data">
+          <div class="log-header">
+            <span class="date">📅 {{ log.dateTime }}</span>
+            <span class="rating">⭐ {{ log.rating }}/5</span>
+          </div>
+          
+          <p class="comment">"{{ log.comment }}"</p>
+          
+          <div class="log-stats">
+            <span class="stat-badge">🛣️ {{ log.totalDistance }} km</span>
+            <span class="stat-badge">⏱️ {{ log.totalTime }} min</span>
+          </div>
+        </div>
+
+        <div class="log-actions">
+          <button mat-button color="primary" (click)="onEdit(log.id)">Bearbeiten</button>
+          <button mat-button color="warn" (click)="onDelete(log.id)">Löschen</button>
+        </div>
+
+      </div>
+    }
+  </div>
+
 </div>

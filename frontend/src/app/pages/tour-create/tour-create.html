@@ -6,11 +6,11 @@
     <h1>Neue Tour erstellen</h1>
   }
 
-    <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="tour-form">
-        <mat-form-field appearance="fill">
+  <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="tour-form">
+    
+    <mat-form-field appearance="fill">
       <mat-label>Name der Tour</mat-label>
       <input matInput formControlName="name" placeholder="z.B. Donauradweg">
-      
       @if (tourForm.controls.name.hasError('required')) {
         <mat-error>Der Name ist ein Pflichtfeld.</mat-error>
       }
@@ -20,16 +20,31 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-      <mat-label>Distanz (in km)</mat-label>
-      <input matInput type="number" formControlName="distance">
-      @if (tourForm.controls.distance.hasError('min')) {
-        <mat-error>Die Distanz muss größer als 0 sein.</mat-error>
+      <mat-label>Startort</mat-label>
+      <input matInput formControlName="start" placeholder="z.B. Wien">
+      @if (tourForm.controls.start.hasError('required')) {
+        <mat-error>Der Startort ist ein Pflichtfeld.</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-      <mat-label>Dauer (hh:mm)</mat-label>
-      <input matInput type="time" formControlName="estimatedTime">
+      <mat-label>Zielort</mat-label>
+      <input matInput formControlName="destination" placeholder="z.B. Salzburg">
+      @if (tourForm.controls.destination.hasError('required')) {
+        <mat-error>Der Zielort ist ein Pflichtfeld.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Transportmittel</mat-label>
+      <mat-select formControlName="transportType">
+        <mat-option value="Zu Fuß">Zu Fuß</mat-option>
+        <mat-option value="Fahrrad">Fahrrad</mat-option>
+        <mat-option value="Auto">Auto</mat-option>
+      </mat-select>
+      @if (tourForm.controls.transportType.hasError('required')) {
+        <mat-error>Bitte wähle ein Transportmittel aus.</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="fill">
@@ -39,10 +54,10 @@
 
     <div class="form-actions">
       <button mat-button type="button" routerLink="/home">Abbrechen</button>
-      
       <button mat-raised-button color="primary" type="submit" [disabled]="tourForm.invalid">
         {{ isEditMode ? 'Änderungen speichern' : 'Tour speichern'}}
       </button>
     </div>
-    </form>
+    
+  </form>
 </div>

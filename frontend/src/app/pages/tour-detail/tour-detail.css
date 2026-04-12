@@ -1,0 +1,80 @@
+.detail-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.detail-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.map-placeholder {
+  height: 300px;
+  background-color: #e0e0e0;
+  border: 2px dashed #999;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.info-box {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.info-box p {
+  margin: 8px 0;
+}
+
+/* Log-Button links, Edit/Delete rechts */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 25px;
+  border-bottom: 2px solid #eee; /* Eine feine Trennlinie zu den Logs */
+  margin-bottom: 25px;
+}
+
+/* Abstand zwischen Edit und Delete */
+.danger-zone {
+  display: flex;
+  gap: 15px;
+}
+
+/* Tour logs */
+.tour-logs-section h2 {
+  margin-bottom: 15px;
+  color: #444;
+}
+
+/* Falls die Tour ID falsch ist */
+.error-container {
+  max-width: 500px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

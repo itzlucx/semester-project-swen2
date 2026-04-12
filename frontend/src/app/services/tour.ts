@@ -6,8 +6,22 @@ import { Tour } from '../models/tour.model';
 })
 export class TourService {
   private mockTours: Tour[] = [
-    { id: 1, name: 'Wienerwald Runde', description: 'Entspannte Runde', distance: 15.5, estimatedTime: '03:00' },
-    { id: 2, name: 'Großglockner', description: 'Extrem steil!', distance: 48.0, estimatedTime: '05:30'}
+    { 
+    id: 1, 
+    name: 'Wienerwald Runde', 
+    description: 'Entspannte Runde durch den Wald, perfekt für einen Sonntagnachmittag.', 
+    start: 'Wien Hütteldorf', 
+    destination: 'Sophienalpe', 
+    transportType: 'Fahrrad' 
+  },
+  { 
+    id: 2, 
+    name: 'Großglockner Hochalpenstraße', 
+    description: 'Anspruchsvolle Bergstrecke mit atemberaubender Aussicht und vielen Kurven.', 
+    start: 'Fusch', 
+    destination: 'Heiligenblut', 
+    transportType: 'Auto' 
+  }
   ];
   
   // Get all tours

@@ -1,20 +1,74 @@
+/* Damit Tour-List zu Block-Element wird */
+:host {
+  display: block;
+}
+
 .tour-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* 2 Spalten */
+  grid-template-columns: repeat(2, 350px); 
   gap: 20px;
-  padding: 5rem 0 1rem 5rem;
+  align-items: stretch; /* damit alle Elemente einer Reihe die Höhe des höchsten Elements annehmen */
+}
+
+/* Styling für alle klickbaren Tour Cards */
+.tour-item-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tour-item-card:hover {
+  transform: translateY(-5px); /* Erheben bei hover */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
 }
 
 .tour-card {
+  height: 100%; /* Damit Karte volle Höhe ihres Grid-Platzes einnimmt */
   display: flex;
   flex-direction: column;
+  background-color: #99AD7A;
+}
+
+/* Fenster zu klein für 2 Karten (Handy) -> schalte auf 1 Spalte um */
+@media (max-width: 700px) {
+  .tour-grid {
+    grid-template-columns: 1fr; 
+  }
+  .tour-card {
+    width: 100%; /* Auf Handy darf Karte volle Breite nehmen */
+  }
+}
+
+/* Styling für Add Card */
+.add-tour-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px dashed #999;
+  box-shadow: none !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.add-tour-card:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.02);
+  border-color: #286948;
+}
+
+/* Text und Plus in der Mitte zentrieren */
+.add-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100%;
+  color: #666;
 }
 
-mat-card-content {
-  flex-grow: 1; 
-}
-
-.description {
-  margin-top: 15px;
+.plus-icon {
+  font-size: 5rem;
+  font-weight: 300;
+  line-height: 0.5;
 }

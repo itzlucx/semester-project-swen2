@@ -6,10 +6,11 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-tour-create',
-  imports: [RouterLink, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [RouterLink, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule],
   templateUrl: './tour-create.html',
   styleUrl: './tour-create.css',
 })
@@ -23,12 +24,13 @@ export class TourCreate {
   isEditMode = false;
   editTourId: number | null = null;
 
-  // Form und Validation definieren:
+  // Form und Validation:
   tourForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', Validators.required],
-    distance: ['', [Validators.required, Validators.min(0.1)]],
-    estimatedTime: ['', Validators.required]
+    start: ['', Validators.required],
+    destination: ['', Validators.required],
+    transportType: ['', Validators.required]
   });
 
   ngOnInit(): void {
@@ -43,8 +45,9 @@ export class TourCreate {
         this.tourForm.patchValue({
           name: tourToEdit.name,
           description: tourToEdit.description,
-          distance: String(tourToEdit.distance),
-          estimatedTime: tourToEdit.estimatedTime
+          start: tourToEdit.start,
+          destination: tourToEdit.destination,
+          transportType: tourToEdit.transportType
         });
       }
     }
