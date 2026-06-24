@@ -1,35 +1,30 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TourLog } from '../models/tourlog.model';
+import { TourLogStateService } from './tour-log-state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TourLogService {
-  private logs = signal<TourLog[]>([]);
+  private state = inject(TourLogStateService);
 
-  // Getter für alle Logs
-  getAllLogs() {
-    return this.logs;
+  loadLogs(tourId: number): void {
+
   }
 
   //  Log hinzufügen
-  addLog(log: TourLog) {
-    log.id = Date.now();
-    this.logs.update((logs) => [...logs, log]);
+  createLog(tourId: number, logData: Omit<TourLog, 'id'>): void {
+    const newLog: TourLog = { ...logData, id: Date.now() };
+    this.state.addLog(newLog);
   }
 
   // Log löschen
-  deleteLog(id: number) {
-    this.logs.update((logs) => logs.filter((l) => l.id !== id));
-  }
-
-  // Log holen (für bearbeiten)
-  getLogById(id: number): TourLog | undefined {
-    return this.logs().find((l) => l.id === id);
+  deleteLog(tourId: number, id: number): void {
+    this.state.removeLog(id);
   }
 
   // Log updaten
-  updateLog(updatedLog: TourLog) {
-    this.logs.update((logs) => logs.map((l) => (l.id === updatedLog.id ? updatedLog : l)));
+  updateLog(tourId: number, log: TourLog): void {
+    this.state.updateLog(log);
   }
 }

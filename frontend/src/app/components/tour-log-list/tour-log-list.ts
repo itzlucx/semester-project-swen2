@@ -1,32 +1,28 @@
-import { Component, computed, Input } from '@angular/core';
+import { Component, computed, Input, OnInit, inject } from '@angular/core';
 import { TourLogService} from '../../services/tour-log';
 import { Router } from '@angular/router';
+import { TourLogStateService } from '../../services/tour-log-state';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-tour-log-list',
-  imports: [],
+  imports: [MatButtonModule],
   templateUrl: './tour-log-list.html',
   styleUrl: './tour-log-list.css',
 })
-export class TourLogList {
+export class TourLogList implements OnInit {
   @Input() tourId!: number;
 
-  logs;
+  private logService = inject(TourLogService);
+  protected state = inject(TourLogStateService);
+  private router = inject(Router);
 
-  constructor(
-    private logService: TourLogService,
-    private router: Router,
-  ) {
-    this.logs = computed(() =>
-      this.logService
-        .getAllLogs()()
-        .filter((log) => log.tourId === this.tourId),
-    );
-
+  ngOnInit(): void {
+    this.logService.loadLogs(this.tourId);
   }
 
   onDelete(id: number) {
-    this.logService.deleteLog(id);
+    this.logService.deleteLog(this.tourId, id);
   }
 
   onEdit(id: number) {

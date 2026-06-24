@@ -1,23 +1,23 @@
 <div class="log-list">
   <h2>Tour Logs</h2>
-  @if (logs().length === 0) {
+  @if (state.logs().length === 0) {
     <div class="empty-state">
       <p>Noch keine Logs vorhanden. Zeit für die erste Tour!</p>
     </div>
   }
 
   <div class="logs-container">
-    @for (log of logs(); track log.id) {
+    @for (log of state.logs(); track log.id) {
       <div class="log-item">
-        
+
         <div class="log-data">
           <div class="log-header">
             <span class="date">📅 {{ log.dateTime }}</span>
             <span class="rating">⭐ {{ log.rating }}/5</span>
           </div>
-          
+
           <p class="comment">"{{ log.comment }}"</p>
-          
+
           <div class="log-stats">
             <span class="stat-badge">🛣️ {{ log.totalDistance }} km</span>
             <span class="stat-badge">⏱️ {{ log.totalTime }} min</span>

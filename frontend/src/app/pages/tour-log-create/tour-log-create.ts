@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatError, MatFormField, MatLabel } from '@angular/material/input';
@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TourLogService} from '../../services/tour-log';
+import { TourLogStateService } from '../../services/tour-log-state';
 
 @Component({
   selector: 'app-tour-log-create',
@@ -30,17 +31,15 @@ export class TourLogCreate implements OnInit {
   logId?: number;
   isEditMode = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private logservice: TourLogService,
-  ) {}
+  fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private logservice = inject(TourLogService);
+  private logState = inject(TourLogStateService);
 
   ngOnInit(): void {
     // Route-Parameter abonnieren
-    this.route.paramMap.subscribe(params => {
-
+    this.route.paramMap.subscribe((params) => {
       // Tour-ID holen
       this.tourId = Number(params.get('tourId'));
 
@@ -62,7 +61,7 @@ export class TourLogCreate implements OnInit {
       if (this.logId) {
         this.isEditMode = true;
 
-        const log = this.logservice.getLogById(this.logId);
+        const log = this.logState.getLogById(this.logId);
 
         if (log) {
           this.form.patchValue({
@@ -71,11 +70,10 @@ export class TourLogCreate implements OnInit {
             difficulty: log.difficulty,
             totalDistance: log.totalDistance,
             totalTime: log.totalTime,
-            rating: log.rating
+            rating: log.rating,
           });
         }
       }
-
     });
   }
 
@@ -98,9 +96,9 @@ export class TourLogCreate implements OnInit {
     };
 
     if (this.isEditMode) {
-      this.logservice.updateLog(logData);
+      this.logservice.updateLog(this.tourId, logData);
     } else {
-      this.logservice.addLog(logData);
+      this.logservice.createLog(this.tourId, logData);
     }
 
     this.router.navigate(['/tour', this.tourId]);
