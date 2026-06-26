@@ -1,8 +1,54 @@
+// import { Component, inject, OnInit } from '@angular/core';
+// import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+// import { TourService } from '../../services/tour';
+// import { Tour } from '../../models/tour.model';
+//
+// import { MatButtonModule } from '@angular/material/button';
+// import { TourLogList } from '../../components/tour-log-list/tour-log-list';
+//
+// @Component({
+//   selector: 'app-tour-detail',
+//   imports: [MatButtonModule, RouterLink, TourLogList],
+//   templateUrl: './tour-detail.html',
+//   styleUrl: './tour-detail.css',
+// })
+// export class TourDetail implements OnInit {
+//   private route = inject(ActivatedRoute);
+//   private router = inject(Router);
+//   private tourService = inject(TourService);
+//
+//   // Tour deklarieren (? erlaubt undefined)
+//   tour?: Tour;
+//
+//   ngOnInit(): void {
+//     // "Foto" von URL -> sucht nach Platzhalter ":id" aus app.routes.ts
+//     const idFromUrl = Number(this.route.snapshot.paramMap.get('id'));
+//
+//     // Falls id gefunden -> tourService nach der zugehörigen Tour fragen
+//     if (idFromUrl) {
+//       this.tour = this.tourService.getTourById(idFromUrl);
+//       console.log('Gefundene Tour: ', this.tour);
+//     }
+//   }
+//
+//   onDelete(): void {
+//     if (this.tour) {
+//       const isConfirmed = confirm(`Bist du sicher, dass du "${this.tour.name}" löschen möchtest?`);
+//
+//       if (isConfirmed) {
+//         // Im Service löschen
+//         this.tourService.deleteTour(this.tour.id);
+//         // User zu /home navigieren
+//         this.router.navigate(['/home']);
+//       }
+//     }
+//   }
+// }
+
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TourService } from '../../services/tour';
-import { Tour } from '../../models/tour.model';
-
+import { TourStateService } from '../../services/tour-state';
 import { MatButtonModule } from '@angular/material/button';
 import { TourLogList } from '../../components/tour-log-list/tour-log-list';
 
@@ -16,29 +62,21 @@ export class TourDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private tourService = inject(TourService);
-
-  // Tour deklarieren (? erlaubt undefined)
-  tour?: Tour;
+  protected state = inject(TourStateService);
 
   ngOnInit(): void {
-    // "Foto" von URL -> sucht nach Platzhalter ":id" aus app.routes.ts
-    const idFromUrl = Number(this.route.snapshot.paramMap.get('id'));
-
-    // Falls id gefunden -> tourService nach der zugehörigen Tour fragen
-    if (idFromUrl) {
-      this.tour = this.tourService.getTourById(idFromUrl);
-      console.log('Gefundene Tour: ', this.tour);
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (id) {
+      this.tourService.getTourById(id);
     }
   }
 
   onDelete(): void {
-    if (this.tour) {
-      const isConfirmed = confirm(`Bist du sicher, dass du "${this.tour.name}" löschen möchtest?`);
-
+    const tour = this.state.selectedTour();
+    if (tour) {
+      const isConfirmed = confirm(`Bist du sicher, dass du "${tour.name}" löschen möchtest?`);
       if (isConfirmed) {
-        // Im Service löschen
-        this.tourService.deleteTour(this.tour.id);
-        // User zu /home navigieren
+        this.tourService.deleteTour(tour.id);
         this.router.navigate(['/home']);
       }
     }
