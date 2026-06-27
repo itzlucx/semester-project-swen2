@@ -15,6 +15,7 @@ public class TourLog {
 
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Tour tour;
 
     @Column(nullable = false)
