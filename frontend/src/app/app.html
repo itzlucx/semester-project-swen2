@@ -1,3 +1,11 @@
-<router-outlet>
+@if (showNavbar()) {
+  <nav class="navbar">
+    <span class="brand">🗺️ TourPlanner</span>
+    <div class="nav-right">
+      <span>Sie sind angemeldet als: <strong>{{ authState.username() }}</strong></span>
+      <button mat-button (click)="onLogout()">Logout</button>
+    </div>
+  </nav>
+}
 
-</router-outlet>
+<router-outlet></router-outlet>
