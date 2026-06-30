@@ -1,128 +1,74 @@
-// import { Injectable } from '@angular/core';
-// import { Tour } from '../models/tour.model';
-//
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class TourService {
-//   private mockTours: Tour[] = [
-//     {
-//     id: 1,
-//     name: 'Wienerwald Runde',
-//     description: 'Entspannte Runde durch den Wald, perfekt für einen Sonntagnachmittag.',
-//     start: 'Wien Hütteldorf',
-//     destination: 'Sophienalpe',
-//     transportType: 'Fahrrad'
-//   },
-//   {
-//     id: 2,
-//     name: 'Großglockner Hochalpenstraße',
-//     description: 'Anspruchsvolle Bergstrecke mit atemberaubender Aussicht und vielen Kurven.',
-//     start: 'Fusch',
-//     destination: 'Heiligenblut',
-//     transportType: 'Auto'
-//   }
-//   ];
-//
-//   // Get all tours
-//   getTours(): Tour[] {
-//     return this.mockTours;
-//   }
-//
-//   // Get one tour
-//   getTourById(id: number): Tour | undefined {
-//     return this.mockTours.find(tour => tour.id === id);
-//   }
-//
-//   // Create new tour
-//   addTour(newTourData: Omit<Tour, 'id'>): void {
-//
-//     // Random id (zwischen 1 und 1000)
-//     const newId = Math.floor(Math.random() * 100) + 1;
-//
-//     // Tour zusammenbauen
-//     const newTour: Tour = {
-//       ...newTourData,
-//       id: newId
-//     };
-//
-//     // Ins Array pushen
-//     this.mockTours.push(newTour);
-//     console.log('Tour hinzugefügt! Aktuelle Touren:', this.mockTours);
-//   }
-//
-//   deleteTour(id: number): void {
-//     this.mockTours = this.mockTours.filter(t => t.id !== id);
-//     console.log('Tour gelöscht. Verbleibend:', this.mockTours.length);
-//   }
-//
-//   updateTour(id: number, updatedData: Partial<Tour>): void {
-//     console.log('Service empfängt zum Speichern:', updatedData);
-//     // Index der Tour im Array suchen
-//     const index = this.mockTours.findIndex(t => t.id === id);
-//     console.log('Service findet Tour an Array-Position (Index):', index);
-//
-//     if (index !== -1) {
-//       this.mockTours[index] = { ...this.mockTours[index], ...updatedData, id: id };
-//       console.log('Tour aktualisiert:', this.mockTours[index]);
-//     }
-//   }
-// }
-
 import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Tour } from '../models/tour.model';
-import { TourStateService } from './tour-state';
+import { TourStateService } from '../services/tour-state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TourService {
   private state = inject(TourStateService);
+  private http = inject(HttpClient);
+  
+  // Java-Backend
+  private apiUrl = 'http://localhost:8080/api/tours';
 
-  private mockTours: Tour[] = [
-    {
-      id: 1,
-      name: 'Wienerwald Runde',
-      description: 'Entspannte Runde durch den Wald, perfekt für einen Sonntagnachmittag.',
-      start: 'Wien Hütteldorf',
-      destination: 'Sophienalpe',
-      transportType: 'Fahrrad',
-    },
-    {
-      id: 2,
-      name: 'Großglockner Hochalpenstraße',
-      description: 'Anspruchsvolle Bergstrecke mit atemberaubender Aussicht und vielen Kurven.',
-      start: 'Fusch',
-      destination: 'Heiligenblut',
-      transportType: 'Auto',
-    },
-  ];
-
+  // Alle Touren laden (GET)
   loadTours(): void {
-    if (this.state.tours().length === 0) {
-      this.state.setTours(this.mockTours);
-    }
+    this.state.setLoading(true);
+    this.http.get<Tour[]>(this.apiUrl).subscribe({
+      next: (tours) => {
+        this.state.setTours(tours);
+        this.state.setLoading(false);
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Touren:', err);
+        this.state.setLoading(false);
+      }
+    });
   }
 
+  // Einzelne Tour laden (GET)
   getTourById(id: number): void {
-    const tour = this.state.tours().find((t) => t.id === id) ?? null;
-    this.state.setSelectedTour(tour);
+    this.http.get<Tour>(`${this.apiUrl}/${id}`).subscribe({
+      next: (tour) => {
+        this.state.setSelectedTour(tour);
+      },
+      error: (err) => {
+        console.error(`Fehler beim Laden der Tour ${id}:`, err);
+        this.state.setSelectedTour(null);
+      }
+    });
   }
 
+  // Tour erstellen (POST)
   createTour(tourData: Omit<Tour, 'id'>): void {
-    const newTour: Tour = { ...tourData, id: Date.now() };
-    this.state.addTour(newTour);
+    this.http.post<Tour>(this.apiUrl, tourData).subscribe({
+      next: (newTour) => {
+        // Backend gibt fertige Tour (mit generierter Datenbank-ID) zurück
+        this.state.addTour(newTour);
+      },
+      error: (err) => console.error('Fehler beim Erstellen der Tour:', err)
+    });
   }
 
+  // Tour aktualisieren (PUT)
   updateTour(id: number, tourData: Partial<Tour>): void {
-    const existing = this.state.tours().find(t => t.id === id);
-    if (existing) {
-      const updated = { ...existing, ...tourData, id };
-      this.state.updateTour(updated);
-    }
+    this.http.put<Tour>(`${this.apiUrl}/${id}`, tourData).subscribe({
+      next: (updatedTour) => {
+        this.state.updateTour(updatedTour);
+      },
+      error: (err) => console.error(`Fehler beim Bearbeiten der Tour ${id}:`, err)
+    });
   }
 
+  // Tour löschen (DELETE)
   deleteTour(id: number): void {
-    this.state.removeTour(id);
+    this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.state.removeTour(id);
+      },
+      error: (err) => console.error(`Fehler beim Löschen der Tour ${id}:`, err)
+    });
   }
 }
