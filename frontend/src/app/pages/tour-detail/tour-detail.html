@@ -51,16 +51,26 @@
       <button mat-button routerLink="/home">Zurück zur Liste</button>
     </header>
 
-    <div class="map-placeholder">
-      <span>🗺️ Map Placeholder</span>
+    <div class="map-container" [hidden]="!state.selectedTour()?.routeInformation">
+      <div #mapElement style="height: 400px; width: 100%; border-radius: 8px; border: 1px solid #ccc;"></div>
     </div>
+    
+    @if (!state.selectedTour()?.routeInformation) {
+       <div class="no-map-warning">Keine Routeninformationen verfügbar.</div>
+    }
 
     <div class="info-box">
       <p><strong>Start: </strong>{{ state.selectedTour()?.start }}</p>
       <p><strong>Destination: </strong>{{ state.selectedTour()?.destination }}</p>
       <p><strong>Transport Type: </strong>{{ state.selectedTour()?.transportType }}</p>
-      <p><strong>Distance: </strong>? km</p>
-      <p><strong>Duration: </strong>? h</p>
+      
+      @if (state.selectedTour()?.distance) {
+        <p><strong>Distance: </strong>{{ state.selectedTour()?.distance | number:'1.1-2' }} km</p>
+      }
+      @if (state.selectedTour()?.estimatedTime) {
+        <p><strong>Duration: </strong>{{ state.selectedTour()?.estimatedTime | number:'1.1-2' }} h</p>
+      }
+
       <p><strong>Description: </strong>{{ state.selectedTour()?.description }}</p>
     </div>
 

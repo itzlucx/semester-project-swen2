@@ -11,9 +11,11 @@ import java.util.Optional;
 public class TourService {
 
     private final TourRepository tourRepository;
+    private final OpenRouteService openRouteService;
 
-    public TourService(TourRepository tourRepository) {
+    public TourService(TourRepository tourRepository, OpenRouteService openRouteService) {
         this.tourRepository = tourRepository;
+        this.openRouteService = openRouteService;
     }
 
     public List<Tour> getAllTours() {
@@ -25,21 +27,26 @@ public class TourService {
     }
 
     public Tour createTour(Tour tour) {
+        enrichTourWithRouteData(tour);
         return tourRepository.save(tour);
     }
 
     public Tour updateTour(Long id, Tour updatedTour) {
         return tourRepository.findById(id)
                 .map(existingTour -> {
+                    boolean routeChanged = !existingTour.getStart().equals(updatedTour.getStart()) ||
+                            !existingTour.getDestination().equals(updatedTour.getDestination()) ||
+                            !existingTour.getTransportType().equals(updatedTour.getTransportType());
+
                     existingTour.setName(updatedTour.getName());
                     existingTour.setDescription(updatedTour.getDescription());
                     existingTour.setStart(updatedTour.getStart());
                     existingTour.setDestination(updatedTour.getDestination());
                     existingTour.setTransportType(updatedTour.getTransportType());
-                    // Falls Frontend-Tour schon Distanz/Zeit hat: übernehmen
-                    existingTour.setDistance(updatedTour.getDistance());
-                    existingTour.setEstimatedTime(updatedTour.getEstimatedTime());
-                    existingTour.setRouteInformation(updatedTour.getRouteInformation());
+
+                    if (routeChanged) {
+                        enrichTourWithRouteData(existingTour);
+                    }
 
                     return tourRepository.save(existingTour);
                 })
@@ -48,5 +55,14 @@ public class TourService {
 
     public void deleteTour(Long id) {
         tourRepository.deleteById(id);
+    }
+
+    private void enrichTourWithRouteData(Tour tour) {
+        OpenRouteService.RouteData data = openRouteService.calculateRoute(tour.getStart(), tour.getDestination(), tour.getTransportType());
+        if (data != null) {
+            tour.setDistance(data.getDistance());
+            tour.setEstimatedTime(data.getEstimatedTime());
+            tour.setRouteInformation(data.getRouteInformation());
+        }
     }
 }

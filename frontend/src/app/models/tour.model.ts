@@ -5,7 +5,7 @@ export interface Tour {
     start: string;
     destination: string;
     transportType: string;
-    // distance: number; wird von OpenRouteservice API ausgerechnet
-    // estimatedTime: string; wird von OpenRouteservice API ausgerechnet
-    // routeInformation: string;
+    distance?: number; 
+    estimatedTime?: number;
+    routeInformation?: string;
 }
