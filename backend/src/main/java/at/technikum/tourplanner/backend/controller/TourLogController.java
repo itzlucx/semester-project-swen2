@@ -36,6 +36,7 @@ public class TourLogController {
             TourLog createdLog = tourLogService.createTourLog(tourId, tourLog);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdLog);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }

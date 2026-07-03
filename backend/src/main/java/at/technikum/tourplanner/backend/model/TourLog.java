@@ -2,7 +2,6 @@ package at.technikum.tourplanner.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -19,7 +18,7 @@ public class TourLog {
     private Tour tour;
 
     @Column(nullable = false)
-    private LocalDateTime dateTime;
+    private String dateTime;
 
     @Column(columnDefinition = "TEXT")
     private String comment;

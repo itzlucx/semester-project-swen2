@@ -6,8 +6,18 @@ import { TourLog } from '../models/tourlog.model';
 })
 export class TourLogStateService {
   private _logs = signal<TourLog[]>([]);
+  private _loading = signal<boolean>(false);
 
   readonly logs = computed(() => this._logs());
+  readonly loading = computed(() => this._loading());
+
+  setLogs(logs: TourLog[]): void {
+    this._logs.set(logs);
+  }
+
+  setLoading(loading: boolean): void {
+    this._loading.set(loading);
+  }
 
   addLog(log: TourLog): void {
     this._logs.update((logs) => [...logs, log]);

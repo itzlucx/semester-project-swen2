@@ -6,11 +6,20 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tour-log-form">
 
     <mat-form-field appearance="fill">
-      <mat-label>Datum & Uhrzeit</mat-label>
-      <input matInput type="datetime-local" formControlName="dateTime">
+      <mat-label>Datum</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      @if (form.controls['date'].hasError('required')) {
+        <mat-error>Datum ist erforderlich.</mat-error>
+      }
+    </mat-form-field>
 
-      @if (this.form.controls["dateTime"].hasError('required')) {
-        <mat-error>Datum und Uhrzeit sind erforderlich.</mat-error>
+    <mat-form-field appearance="fill">
+      <mat-label>Uhrzeit</mat-label>
+      <input matInput type="time" formControlName="time">
+      @if (form.controls['time'].hasError('required')) {
+        <mat-error>Uhrzeit ist erforderlich.</mat-error>
       }
     </mat-form-field>
 

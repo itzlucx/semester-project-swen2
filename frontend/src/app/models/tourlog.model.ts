@@ -1,7 +1,7 @@
 export interface TourLog {
   id: number;
   tourId: number;
-  dateTime: Date;
+  dateTime: string;
   comment: string;
   difficulty: 'easy' | 'medium' | 'hard';
   totalDistance: number;

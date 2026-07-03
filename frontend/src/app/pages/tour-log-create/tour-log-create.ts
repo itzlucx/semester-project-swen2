@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TourLogService} from '../../services/tour-log';
 import { TourLogStateService } from '../../services/tour-log-state';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-tour-log-create',
@@ -21,6 +23,8 @@ import { TourLogStateService } from '../../services/tour-log-state';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './tour-log-create.html',
   styleUrl: './tour-log-create.css',
@@ -49,7 +53,8 @@ export class TourLogCreate implements OnInit {
 
       // Formular erstellen
       this.form = this.fb.group({
-        dateTime: ['', Validators.required],
+        date: ['', Validators.required],
+        time: ['', Validators.required],
         comment: [''],
         difficulty: ['medium', Validators.required],
         totalDistance: ['', [Validators.required, Validators.min(0)]],
@@ -64,8 +69,14 @@ export class TourLogCreate implements OnInit {
         const log = this.logState.getLogById(this.logId);
 
         if (log) {
+          // dateTime z.B. "2026-07-03T17:30:00" aufteilen
+          const dateTimeParts = log.dateTime.split('T');
+          const datePart = dateTimeParts[0]; // "2026-07-03"
+          const timePart = dateTimeParts[1]?.slice(0, 5); // "17:30"
+
           this.form.patchValue({
-            dateTime: log.dateTime,
+            date: new Date(datePart),
+            time: timePart,
             comment: log.comment,
             difficulty: log.difficulty,
             totalDistance: log.totalDistance,
@@ -84,10 +95,21 @@ export class TourLogCreate implements OnInit {
       return;
     }
 
-    const logData = {
-      id: this.logId ?? 0,
+    const date = this.form.value.date;
+    const time = this.form.value.time;
+    const dateObj = new Date(date);
+    const [hours, minutes] = time.split(':');
+    dateObj.setHours(Number(hours), Number(minutes), 0);
+
+    // Statt toISOString() (UTC) -> manuell formatieren (lokale Zeit)
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const formattedDateTime =
+      `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}` +
+      `T${pad(Number(hours))}:${pad(Number(minutes))}:00`;
+
+    const logData: Record<string, any> = {
       tourId: this.tourId,
-      dateTime: this.form.value.dateTime,
+      dateTime: formattedDateTime,
       comment: this.form.value.comment,
       difficulty: this.form.value.difficulty,
       totalDistance: Number(this.form.value.totalDistance),
@@ -95,10 +117,15 @@ export class TourLogCreate implements OnInit {
       rating: Number(this.form.value.rating),
     };
 
+    if (this.isEditMode && this.logId) {
+      logData['id'] = this.logId;
+    }
+
     if (this.isEditMode) {
-      this.logservice.updateLog(this.tourId, logData);
+      this.logservice.updateLog(this.tourId, logData as any);
     } else {
-      this.logservice.createLog(this.tourId, logData);
+      console.log('Sending logData:', JSON.stringify(logData));
+      this.logservice.createLog(this.tourId, logData as any);
     }
 
     this.router.navigate(['/tour', this.tourId]);
