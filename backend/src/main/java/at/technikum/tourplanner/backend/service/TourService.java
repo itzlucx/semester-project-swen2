@@ -1,6 +1,7 @@
 package at.technikum.tourplanner.backend.service;
 
 import at.technikum.tourplanner.backend.model.Tour;
+import at.technikum.tourplanner.backend.model.TourLog;
 import at.technikum.tourplanner.backend.repository.TourRepository;
 import org.springframework.stereotype.Service;
 import at.technikum.tourplanner.backend.model.User;
@@ -30,11 +31,17 @@ public class TourService {
     }
 
     public List<Tour> getAllTours() {
-        return tourRepository.findByUser(getCurrentUser());
+        List<Tour> tours = tourRepository.findByUser(getCurrentUser());
+        tours.forEach(this::computeAttributes);
+        return tours;
     }
 
     public Optional<Tour> getTourById(Long id) {
-        return tourRepository.findByIdAndUser(id, getCurrentUser());
+        return tourRepository.findByIdAndUser(id, getCurrentUser())
+                .map(tour -> {
+                    computeAttributes(tour);
+                    return tour;
+                });
     }
 
     public Tour createTour(Tour tour) {
@@ -79,6 +86,54 @@ public class TourService {
             tour.setDistance(data.getDistance());
             tour.setEstimatedTime(data.getEstimatedTime());
             tour.setRouteInformation(data.getRouteInformation());
+        }
+    }
+
+    private void computeAttributes(Tour tour) {
+        List<TourLog> logs = tour.getTourLogs();
+
+        // Popularity = Anzahl der Logs
+        tour.setPopularity(logs.size());
+
+        // Child-Friendliness berechnen
+        if (logs.isEmpty()) {
+            tour.setChildFriendliness("unknown");
+            return;
+        }
+
+        double avgDifficulty = logs.stream()
+                .mapToInt(log -> {
+                    switch (log.getDifficulty()) {
+                        case "easy": return 1;
+                        case "medium": return 2;
+                        case "hard": return 3;
+                        default: return 2;
+                    }
+                })
+                .average()
+                .orElse(2.0);
+
+        double avgDistance = logs.stream()
+                .mapToDouble(TourLog::getTotalDistance)
+                .average()
+                .orElse(0.0);
+
+        double avgTime = logs.stream()
+                .mapToDouble(TourLog::getTotalTime)
+                .average()
+                .orElse(0.0);
+
+        // Score: niedrig = kinderfreundlich
+        double score = (avgDifficulty * 0.5) + (avgDistance / 20.0 * 0.3) + (avgTime / 60.0 * 0.2);
+
+        if (score < 1.2) {
+            tour.setChildFriendliness("very friendly");
+        } else if (score < 1.8) {
+            tour.setChildFriendliness("friendly");
+        } else if (score < 2.5) {
+            tour.setChildFriendliness("moderate");
+        } else {
+            tour.setChildFriendliness("not friendly");
         }
     }
 }

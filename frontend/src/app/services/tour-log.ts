@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TourLog } from '../models/tourlog.model';
 import { TourLogStateService } from './tour-log-state';
+import { TourService } from './tour';
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +10,14 @@ import { TourLogStateService } from './tour-log-state';
 export class TourLogService {
   private http = inject(HttpClient);
   private state = inject(TourLogStateService);
+  private tourService = inject(TourService);
 
   private apiUrl(tourId: number): string {
     return `http://localhost:8080/api/tours/${tourId}/logs`;
   }
 
   loadLogs(tourId: number): void {
+    this.state.clearLogs();
     this.state.setLoading(true);
     this.http.get<TourLog[]>(this.apiUrl(tourId)).subscribe({
       next: (logs) => {
@@ -30,21 +33,30 @@ export class TourLogService {
 
   createLog(tourId: number, logData: Omit<TourLog, 'id'>): void {
     this.http.post<TourLog>(this.apiUrl(tourId), logData).subscribe({
-      next: (newLog) => this.state.addLog(newLog),
+      next: (newLog) => {
+        this.state.addLog(newLog);
+        this.tourService.getTourById(tourId); // Tour neu laden
+      },
       error: (err) => console.error('Fehler beim Erstellen des Logs:', err),
     });
   }
 
   deleteLog(tourId: number, id: number): void {
     this.http.delete<void>(`${this.apiUrl(tourId)}/${id}`).subscribe({
-      next: () => this.state.removeLog(id),
+      next: () => {
+        this.state.removeLog(id);
+        this.tourService.getTourById(tourId); // Tour neu laden
+      },
       error: (err) => console.error('Fehler beim Löschen des Logs:', err),
     });
   }
 
   updateLog(tourId: number, log: TourLog): void {
     this.http.put<TourLog>(`${this.apiUrl(tourId)}/${log.id}`, log).subscribe({
-      next: (updated) => this.state.updateLog(updated),
+      next: (updated) => {
+        this.state.updateLog(updated);
+        this.tourService.getTourById(tourId); // Tour neu laden
+      },
       error: (err) => console.error('Fehler beim Updaten des Logs:', err),
     });
   }

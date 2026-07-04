@@ -34,4 +34,8 @@ export class TourLogStateService {
   getLogById(id: number): TourLog | undefined {
     return this._logs().find((l) => l.id === id);
   }
+
+  clearLogs(): void {
+    this._logs.set([]);
+  }
 }

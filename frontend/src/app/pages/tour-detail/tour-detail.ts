@@ -86,6 +86,7 @@ export class TourDetail implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.state.setSelectedTour(null);
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.tourService.getTourById(id);

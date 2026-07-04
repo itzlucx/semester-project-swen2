@@ -42,4 +42,10 @@ public class Tour {
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TourLog> tourLogs;
+
+    @Transient
+    private Integer popularity;
+
+    @Transient
+    private String childFriendliness;
 }
