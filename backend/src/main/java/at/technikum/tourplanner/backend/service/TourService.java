@@ -72,7 +72,11 @@ public class TourService {
                         enrichTourWithRouteData(existingTour);
                     }
 
-                    return tourRepository.save(existingTour);
+                    Tour savedTour = tourRepository.save(existingTour);
+
+                    computeAttributes(savedTour);
+
+                    return savedTour;
                 })
                 .orElseThrow(() -> new RuntimeException("Tour nicht gefunden mit ID: " + id));
     }
