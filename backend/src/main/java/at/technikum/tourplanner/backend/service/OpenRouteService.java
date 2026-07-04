@@ -77,15 +77,39 @@ public class OpenRouteService {
         }
     }
 
+//    private double[] getCoordinates(String location) throws Exception {
+//        String url = UriComponentsBuilder.fromUriString(baseUrl + "/geocode/search")
+//                .queryParam("text", location)
+//                .toUriString();
+//
+//        String response = makeGetRequest(url);
+//        log.debug("Geocoding response für '{}': {}", location, response);
+//        JsonNode root = objectMapper.readTree(response);
+//
+//        JsonNode features = root.path("features");
+//        if (features.isEmpty()) {
+//            throw new Exception("Kein Ergebnis für Location: " + location);
+//        }
+//
+//        JsonNode coords = root.path("features").get(0).path("geometry").path("coordinates");
+//        return new double[]{coords.get(0).asDouble(), coords.get(1).asDouble()};
+//    }
+
     private double[] getCoordinates(String location) throws Exception {
-        String url = UriComponentsBuilder.fromUriString(baseUrl + "/geocode/search")
-                .queryParam("text", location)
-                .toUriString();
+        String url = baseUrl + "/geocode/search?text=" +
+                java.net.URLEncoder.encode(location, "UTF-8") +
+                "&size=1";
 
         String response = makeGetRequest(url);
+        log.debug("Geocoding response für '{}': {}", location, response);
         JsonNode root = objectMapper.readTree(response);
 
-        JsonNode coords = root.path("features").get(0).path("geometry").path("coordinates");
+        JsonNode features = root.path("features");
+        if (features.isEmpty()) {
+            throw new Exception("Kein Ergebnis für Location: " + location);
+        }
+
+        JsonNode coords = features.get(0).path("geometry").path("coordinates");
         return new double[]{coords.get(0).asDouble(), coords.get(1).asDouble()};
     }
 

@@ -53,10 +53,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { TourLogList } from '../../components/tour-log-list/tour-log-list';
 import { DecimalPipe } from '@angular/common';
 import * as L from 'leaflet';
+import { DurationPipe } from '../../pipes/duration.pipe';
 
 @Component({
   selector: 'app-tour-detail',
-  imports: [MatButtonModule, RouterLink, TourLogList, DecimalPipe],
+  imports: [MatButtonModule, RouterLink, TourLogList, DecimalPipe, DurationPipe],
   templateUrl: './tour-detail.html',
   styleUrl: './tour-detail.css',
 })
@@ -103,7 +104,7 @@ export class TourDetail implements OnInit, OnDestroy {
   // nativeElement als Parameter übergeben
   private initMap(geoJsonString: string, htmlElement: any): void {
     if (this.map) {
-      this.map.remove(); 
+      this.map.remove();
     }
 
     // übergebenes Element nutzen
@@ -116,7 +117,7 @@ export class TourDetail implements OnInit, OnDestroy {
 
     try {
       const geoData = JSON.parse(geoJsonString);
-      
+
       // blaue Route zeichnen
       const routeLayer = L.geoJSON(geoData, {
         style: { color: '#0047AB', weight: 5, opacity: 0.8 }

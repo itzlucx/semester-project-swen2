@@ -9,7 +9,7 @@ import { TourStateService } from '../services/tour-state';
 export class TourService {
   private state = inject(TourStateService);
   private http = inject(HttpClient);
-  
+
   // Java-Backend
   private apiUrl = 'http://localhost:8080/api/tours';
 
@@ -57,6 +57,7 @@ export class TourService {
     this.http.put<Tour>(`${this.apiUrl}/${id}`, tourData).subscribe({
       next: (updatedTour) => {
         this.state.updateTour(updatedTour);
+        this.state.setSelectedTour(updatedTour);
       },
       error: (err) => console.error(`Fehler beim Bearbeiten der Tour ${id}:`, err)
     });
