@@ -51,4 +51,9 @@ public class TourController {
         tourService.deleteTour(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public List<Tour> searchTours(@RequestParam String query) {
+        return tourService.searchTours(query);
+    }
 }

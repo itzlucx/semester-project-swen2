@@ -72,4 +72,22 @@ export class TourService {
       error: (err) => console.error(`Fehler beim Löschen der Tour ${id}:`, err)
     });
   }
+
+  searchTours(query: string): void {
+    if (!query.trim()) {
+      this.loadTours();
+      return;
+    }
+    this.state.setLoading(true);
+    this.http.get<Tour[]>(`${this.apiUrl}/search?query=${encodeURIComponent(query)}`).subscribe({
+      next: (tours) => {
+        this.state.setTours(tours);
+        this.state.setLoading(false);
+      },
+      error: (err) => {
+        console.error('Fehler bei der Suche:', err);
+        this.state.setLoading(false);
+      }
+    });
+  }
 }

@@ -136,4 +136,27 @@ public class TourService {
             tour.setChildFriendliness("not friendly");
         }
     }
+
+    public List<Tour> searchTours(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllTours();
+        }
+
+        List<Tour> tours = tourRepository.searchByUser(query.trim(), getCurrentUser());
+        tours.forEach(this::computeAttributes);
+
+        // zusätzlich in computed attributes filtern
+        String lowerQuery = query.trim().toLowerCase();
+        List<Tour> allTours = getAllTours();
+
+        return allTours.stream()
+                .filter(tour ->
+                        tours.contains(tour) ||
+                                (tour.getChildFriendliness() != null &&
+                                        tour.getChildFriendliness().toLowerCase().contains(lowerQuery)) ||
+                                (tour.getPopularity() != null &&
+                                        tour.getPopularity().toString().contains(lowerQuery))
+                )
+                .toList();
+    }
 }
