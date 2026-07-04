@@ -1,32 +1,57 @@
-<div class="home-container">
-  <div class="content-area">
-    <mat-card class="tour-container">
-      <mat-card-header>
-        <h2>Touren</h2>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="search-bar">
-          <mat-form-field appearance="outline">
-            <mat-label>Touren durchsuchen...</mat-label>
-            <input matInput [(ngModel)]="searchQuery" (input)="onSearch()" />
-            @if (searchQuery) {
-              <button matSuffix mat-icon-button (click)="onClear()">✕</button>
-            }
-          </mat-form-field>
-        </div>
-        <app-tour-list [tours]="state.tours()"></app-tour-list>
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <div class="backup-actions">
-  <button mat-raised-button color="accent" (click)="onExport()">
-    📥 Touren Exportieren (JSON)
-  </button>
-
-  <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept=".json">
+<div class="home-layout">
   
-  <button mat-raised-button color="primary" (click)="fileInput.click()">
-    📤 Touren Importieren (JSON)
-  </button>
-</div>
+  <div class="tour-list-column">
+    <h1>Meine Abenteuer</h1>
+    <app-tour-list [tours]="state.tours()"></app-tour-list>
+  </div>
+
+  <aside class="dashboard-column">
+    
+    <div class="dashboard-card action-card">
+      <h2>Datenverwaltung</h2>
+      <p>Sichere deine Touren oder lade Backups hoch.</p>
+      
+      <div class="button-group">
+        <button mat-stroked-button color="primary" class="dash-btn" (click)="onExport()">
+          <span class="btn-icon">📥</span> Export JSON
+        </button>
+
+        <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept=".json">
+        
+        <button mat-raised-button color="primary" class="dash-btn" (click)="fileInput.click()">
+          <span class="btn-icon">📤</span> Import JSON
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-card stats-card">
+      <h2>Deine Meilensteine</h2>
+      
+      <div class="stat-item">
+        <div class="stat-icon">🗺️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalTours() }}</span>
+          <span class="stat-label">Geplante Touren</span>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon">📖</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalLogs() }}</span>
+          <span class="stat-label">Geschriebene Logs</span>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon">🏔️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalDistance() | number:'1.0-0' }} km</span>
+          <span class="stat-label">Zurückgelegte Distanz</span>
+        </div>
+      </div>
+    </div>
+    
+  </aside>
+
 </div>

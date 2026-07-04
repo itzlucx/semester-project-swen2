@@ -1,74 +1,100 @@
-/* Damit Tour-List zu Block-Element wird */
+/* ==========================================================================
+   LAYOUT & GRID
+   ========================================================================== */
+
 :host {
   display: block;
 }
 
 .tour-grid {
   display: grid;
-  /* 2 Spalten */
-  grid-template-columns: repeat(2, 350px); 
-  gap: 20px;
-  align-items: stretch; /* damit alle Elemente einer Reihe die Höhe des höchsten Elements annehmen */
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 24px;
+  align-items: stretch;
 }
 
-/* Styling für alle klickbaren Tour Cards */
-.tour-item-card {
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tour-item-card:hover {
-  transform: translateY(-5px); /* Erheben bei hover */
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
-}
-
-.tour-card {
-  height: 100%; /* Damit Karte volle Höhe ihres Grid-Platzes einnimmt */
-  display: flex;
-  flex-direction: column;
-  background-color: #99AD7A;
-}
-
-/* Fenster zu klein für 2 Karten (Handy) -> schalte auf 1 Spalte um */
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .tour-grid {
     grid-template-columns: 1fr; 
   }
-  .tour-card {
-    width: 100%; /* Auf Handy darf Karte volle Breite nehmen */
-  }
 }
 
-/* Styling für Add Card */
-.add-tour-card {
+/* ==========================================================================
+   NORMALE TOUR KARTEN (Modern & Clean)
+   ========================================================================== */
+
+.tour-card {
+  height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  overflow: hidden;
+}
+
+.tour-item-card {
   cursor: pointer;
-  background-color: transparent;
-  border: 2px dashed #999;
-  box-shadow: none !important;
-  transition: all 0.2s ease-in-out;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border-left: 6px solid #99AD7A; 
+}
+
+.tour-item-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
+  border-left-color: #2e7d32;
+}
+
+/* ==========================================================================
+   "NEUE TOUR" KARTE (Gestrichelt & Auffällig)
+   ========================================================================== */
+
+.add-tour-card {
+  background-color: #ffffff !important; 
+  border: 2px dashed #4caf50; 
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  height: 100%; 
 }
 
 .add-tour-card:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  transform: scale(1.02);
-  border-color: #286948;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(46, 125, 50, 0.15) !important;
+  background-color: #f4fbf5 !important; 
+  border-color: #2e7d32; 
 }
 
-/* Text und Plus in der Mitte zentrieren */
 .add-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 3rem 1rem;
   height: 100%;
-  color: #666;
 }
 
+/* Plus-Icon */
 .plus-icon {
-  font-size: 5rem;
+  font-size: 3.5rem;
+  line-height: 1;
   font-weight: 300;
-  line-height: 0.5;
+  color: #4caf50; 
+  margin-bottom: 0.8rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.add-tour-card:hover .plus-icon {
+  transform: scale(1.15) rotate(90deg);
+  color: #2e7d32;
+}
+
+.add-tour-card h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
 }

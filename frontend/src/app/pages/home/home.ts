@@ -38,7 +38,7 @@
 //   }
 // }
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { TourList } from '../../components/tour-list/tour-list';
 import { TourService } from '../../services/tour';
 import { TourStateService } from '../../services/tour-state';
@@ -49,10 +49,11 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [TourList, MatButtonModule, MatToolbarModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatIconModule],
+  imports: [TourList, MatButtonModule, MatToolbarModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, DecimalPipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -60,6 +61,19 @@ export class Home implements OnInit {
   private tourService = inject(TourService);
   protected state = inject(TourStateService);
   searchQuery = '';
+
+  // --- Dashboard Statistiken berechnen ---
+  totalTours = computed(() => this.state.tours().length);
+
+  // Summe "popularity" aller Touren
+  totalLogs = computed(() => 
+    this.state.tours().reduce((sum, tour) => sum + (tour.popularity ?? 0), 0)
+  );
+
+  // Summe der KM aller Touren
+  totalDistance = computed(() => 
+    this.state.tours().reduce((sum, tour) => sum + (tour.distance ?? 0), 0)
+  );
 
   ngOnInit(): void {
     this.tourService.loadTours();
