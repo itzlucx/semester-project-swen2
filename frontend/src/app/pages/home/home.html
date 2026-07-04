@@ -1,23 +1,34 @@
 <div class="home-layout">
-  
+
   <div class="tour-list-column">
     <h1>Meine Abenteuer</h1>
+    <div class="search-bar">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="🔍 Touren durchsuchen..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()" />
+      @if (searchQuery) {
+        <button class="search-clear" (click)="onClear()">✕</button>
+      }
+    </div>
     <app-tour-list [tours]="state.tours()"></app-tour-list>
   </div>
 
   <aside class="dashboard-column">
-    
+
     <div class="dashboard-card action-card">
       <h2>Datenverwaltung</h2>
       <p>Sichere deine Touren oder lade Backups hoch.</p>
-      
+
       <div class="button-group">
         <button mat-stroked-button color="primary" class="dash-btn" (click)="onExport()">
           <span class="btn-icon">📥</span> Export JSON
         </button>
 
         <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept=".json">
-        
+
         <button mat-raised-button color="primary" class="dash-btn" (click)="fileInput.click()">
           <span class="btn-icon">📤</span> Import JSON
         </button>
@@ -26,7 +37,7 @@
 
     <div class="dashboard-card stats-card">
       <h2>Deine Meilensteine</h2>
-      
+
       <div class="stat-item">
         <div class="stat-icon">🗺️</div>
         <div class="stat-info">
@@ -51,7 +62,7 @@
         </div>
       </div>
     </div>
-    
+
   </aside>
 
 </div>
