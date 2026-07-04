@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import at.technikum.tourplanner.backend.model.User;
 import at.technikum.tourplanner.backend.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +20,7 @@ public class TourService {
     private final TourRepository tourRepository;
     private final OpenRouteService openRouteService;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TourService(TourRepository tourRepository, OpenRouteService openRouteService, UserRepository userRepository) {
         this.tourRepository = tourRepository;
@@ -158,5 +162,45 @@ public class TourService {
                                         tour.getPopularity().toString().contains(lowerQuery))
                 )
                 .toList();
+    }
+
+    public byte[] exportToursToJSON() {
+        // Holt Touren des aktuell eingeloggten Users
+        List<Tour> tours = getAllTours();
+        try {
+            // Schreibt Liste als formatiertes (pretty-print) JSON-Byte-Array
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(tours);
+        } catch (Exception e) {
+            throw new RuntimeException("Fehler beim Exportieren der Touren: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void importToursFromJSON(byte[] jsonBytes) {
+        User currentUser = getCurrentUser();
+        try {
+            // Liest Byte Array wieder als Liste von Touren ein
+            List<Tour> importedTours = objectMapper.readValue(jsonBytes, new TypeReference<List<Tour>>() {});
+
+            for (Tour tour : importedTours) {
+                // id auf null setzen damit Postgres neue id generiert
+                tour.setId(null);
+                tour.setUser(currentUser); // An aktuellen User binden
+
+                // Falls Tour bereits Logs im JSON hatte, die ebenfalls cleanen und binden
+                if (tour.getTourLogs() != null) {
+                    for (TourLog log : tour.getTourLogs()) {
+                        log.setId(null); // Neue ID für Log erzwingen
+                        log.setTour(tour); // Rückbeziehung setzen
+                    }
+                }
+
+                // Route über ORS frisch berechnen, da sie neu angelegt wird
+                enrichTourWithRouteData(tour);
+                tourRepository.save(tour);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Fehler beim Importieren der Touren: " + e.getMessage());
+        }
     }
 }

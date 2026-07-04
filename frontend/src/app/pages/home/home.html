@@ -18,4 +18,15 @@
       </mat-card-content>
     </mat-card>
   </div>
+  <div class="backup-actions">
+  <button mat-raised-button color="accent" (click)="onExport()">
+    📥 Touren Exportieren (JSON)
+  </button>
+
+  <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept=".json">
+  
+  <button mat-raised-button color="primary" (click)="fileInput.click()">
+    📤 Touren Importieren (JSON)
+  </button>
+</div>
 </div>

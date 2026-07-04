@@ -2,9 +2,12 @@ package at.technikum.tourplanner.backend.controller;
 
 import at.technikum.tourplanner.backend.model.Tour;
 import at.technikum.tourplanner.backend.service.TourService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -55,5 +58,28 @@ public class TourController {
     @GetMapping("/search")
     public List<Tour> searchTours(@RequestParam String query) {
         return tourService.searchTours(query);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportTours() {
+        byte[] jsonBytes = tourService.exportToursToJSON();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=tours_export.json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonBytes);
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<String> importTours(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Datei ist leer.");
+        }
+        try {
+            tourService.importToursFromJSON(file.getBytes());
+            return ResponseEntity.ok("Touren erfolgreich importiert.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
     }
 }

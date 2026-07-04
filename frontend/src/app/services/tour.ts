@@ -90,4 +90,34 @@ export class TourService {
       }
     });
   }
+
+  exportTours(): void {
+  this.http.get(`${this.apiUrl}/export`, { responseType: 'blob' }).subscribe({
+    next: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tours_export_${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => console.error('Fehler beim Exportieren:', err)
+  });
+}
+
+importTours(file: File): void {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  this.http.post(`${this.apiUrl}/import`, formData, { responseType: 'text' }).subscribe({
+    next: (response) => {
+      console.log(response);
+      this.loadTours(); // Touren-Liste im UI neu laden damit importierten Touren erscheinen
+    },
+    error: (err) => console.error('Fehler beim Importieren:', err)
+  });
+}
+
 }

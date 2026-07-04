@@ -73,4 +73,17 @@ export class Home implements OnInit {
     this.searchQuery = '';
     this.tourService.loadTours();
   }
+
+  onExport(): void {
+    this.tourService.exportTours();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.tourService.importTours(file);
+      input.value = ''; // Input zurücksetzen damit selbe Datei mehrmals gewählt werden kann
+    }
+  }
 }
