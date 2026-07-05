@@ -143,6 +143,23 @@ public class TourService {
         } else {
             tour.setChildFriendliness("not friendly");
         }
+
+        // Durchschnitts-Rating
+        if (!logs.isEmpty()) {
+            double avg = logs.stream()
+                    .mapToInt(TourLog::getRating)
+                    .average()
+                    .orElse(0.0);
+            tour.setAvgRating(Math.round(avg * 10.0) / 10.0);
+        } else {
+            tour.setAvgRating(0.0);
+        }
+
+        // Gesamtzeit in Stunden
+        double total = logs.stream()
+                .mapToDouble(TourLog::getTotalTime)
+                .sum();
+        tour.setTotalTime(total / 60.0);
     }
 
     public List<Tour> searchTours(String query) {

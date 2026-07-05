@@ -10,4 +10,7 @@ export interface Tour {
   routeInformation?: string;
   popularity?: number;
   childFriendliness?: string;
+  avgRating?: number;
+  totalTime?: number;
+  mostPopularTour?: string;
 }

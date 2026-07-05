@@ -50,10 +50,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalPipe } from '@angular/common';
+import {DurationPipe} from '../../pipes/duration.pipe';
 
 @Component({
   selector: 'app-home',
-  imports: [TourList, MatButtonModule, MatToolbarModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, DecimalPipe],
+  imports: [
+    TourList,
+    MatButtonModule,
+    MatToolbarModule,
+    MatCardModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    DecimalPipe,
+    DurationPipe,
+  ],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -66,14 +78,33 @@ export class Home implements OnInit {
   totalTours = computed(() => this.state.tours().length);
 
   // Summe "popularity" aller Touren
-  totalLogs = computed(() => 
-    this.state.tours().reduce((sum, tour) => sum + (tour.popularity ?? 0), 0)
+  totalLogs = computed(() =>
+    this.state.tours().reduce((sum, tour) => sum + (tour.popularity ?? 0), 0),
   );
 
   // Summe der KM aller Touren
-  totalDistance = computed(() => 
-    this.state.tours().reduce((sum, tour) => sum + (tour.distance ?? 0), 0)
+  totalDistance = computed(() =>
+    this.state.tours().reduce((sum, tour) => sum + (tour.distance ?? 0), 0),
   );
+
+  avgRating = computed(() => {
+    const tours = this.state.tours();
+    if (tours.length === 0) return 0;
+    const sum = tours.reduce((acc, t) => acc + (t.avgRating ?? 0), 0);
+    return Math.round((sum / tours.length) * 10) / 10;
+  });
+
+  mostPopularTour = computed(() => {
+    const tours = this.state.tours();
+    if (tours.length === 0) return '-';
+    return tours.reduce((best, tour) =>
+      (tour.popularity ?? 0) > (best.popularity ?? 0) ? tour : best,
+    ).name;
+  });
+
+  totalTime = computed(() => {
+    return this.state.tours().reduce((sum, t) => sum + (t.totalTime ?? 0), 0);
+  });
 
   ngOnInit(): void {
     this.tourService.loadTours();

@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Tour } from '../models/tour.model';
 import { TourStateService } from '../services/tour-state';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,7 @@ export class TourService {
       error: (err) => {
         console.error('Fehler beim Laden der Touren:', err);
         this.state.setLoading(false);
-      }
+      },
     });
   }
 
@@ -37,7 +38,7 @@ export class TourService {
       error: (err) => {
         console.error(`Fehler beim Laden der Tour ${id}:`, err);
         this.state.setSelectedTour(null);
-      }
+      },
     });
   }
 
@@ -48,7 +49,7 @@ export class TourService {
         // Backend gibt fertige Tour (mit generierter Datenbank-ID) zurück
         this.state.addTour(newTour);
       },
-      error: (err) => console.error('Fehler beim Erstellen der Tour:', err)
+      error: (err) => console.error('Fehler beim Erstellen der Tour:', err),
     });
   }
 
@@ -59,18 +60,15 @@ export class TourService {
         this.state.updateTour(updatedTour);
         this.state.setSelectedTour(updatedTour);
       },
-      error: (err) => console.error(`Fehler beim Bearbeiten der Tour ${id}:`, err)
+      error: (err) => console.error(`Fehler beim Bearbeiten der Tour ${id}:`, err),
     });
   }
 
   // Tour löschen (DELETE)
-  deleteTour(id: number): void {
-    this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
-      next: () => {
-        this.state.removeTour(id);
-      },
-      error: (err) => console.error(`Fehler beim Löschen der Tour ${id}:`, err)
-    });
+  deleteTour(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(tap(() => this.state.removeTour(id)));
   }
 
   searchTours(query: string): void {
@@ -87,37 +85,36 @@ export class TourService {
       error: (err) => {
         console.error('Fehler bei der Suche:', err);
         this.state.setLoading(false);
-      }
+      },
     });
   }
 
   exportTours(): void {
-  this.http.get(`${this.apiUrl}/export`, { responseType: 'blob' }).subscribe({
-    next: (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `tours_export_${Date.now()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => console.error('Fehler beim Exportieren:', err)
-  });
-}
+    this.http.get(`${this.apiUrl}/export`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tours_export_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Fehler beim Exportieren:', err),
+    });
+  }
 
-importTours(file: File): void {
-  const formData = new FormData();
-  formData.append('file', file);
+  importTours(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
 
-  this.http.post(`${this.apiUrl}/import`, formData, { responseType: 'text' }).subscribe({
-    next: (response) => {
-      console.log(response);
-      this.loadTours(); // Touren-Liste im UI neu laden damit importierten Touren erscheinen
-    },
-    error: (err) => console.error('Fehler beim Importieren:', err)
-  });
-}
-
+    this.http.post(`${this.apiUrl}/import`, formData, { responseType: 'text' }).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.loadTours(); // Touren-Liste im UI neu laden damit importierten Touren erscheinen
+      },
+      error: (err) => console.error('Fehler beim Importieren:', err),
+    });
+  }
 }

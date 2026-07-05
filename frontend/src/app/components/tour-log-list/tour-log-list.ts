@@ -22,7 +22,9 @@ export class TourLogList implements OnInit {
   }
 
   onDelete(id: number) {
-    this.logService.deleteLog(this.tourId, id);
+    if (confirm('Bist du sicher, dass du dieses Log löschen möchtest?')) {
+      this.logService.deleteLog(this.tourId, id);
+    }
   }
 
   onEdit(id: number) {

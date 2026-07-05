@@ -144,8 +144,9 @@ export class TourDetail implements OnInit, OnDestroy {
     const tour = this.state.selectedTour();
     if (tour) {
       if (confirm(`Bist du sicher, dass du "${tour.name}" löschen möchtest?`)) {
-        this.tourService.deleteTour(tour.id);
-        this.router.navigate(['/home']);
+        this.tourService.deleteTour(tour.id).subscribe({
+          next: () => this.router.navigate(['/home']),
+        });
       }
     }
   }

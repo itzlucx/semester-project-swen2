@@ -61,6 +61,29 @@
           <span class="stat-label">Zurückgelegte Distanz</span>
         </div>
       </div>
+      <div class="stat-item">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ avgRating() | number:'1.1-1' }}</span>
+          <span class="stat-label">Durchschnitts-Rating</span>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ mostPopularTour() }}</span>
+          <span class="stat-label">Beliebteste Tour</span>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalTime() | duration }}</span>
+          <span class="stat-label">Gesamte Aktivitätszeit</span>
+        </div>
+      </div>
     </div>
 
   </aside>

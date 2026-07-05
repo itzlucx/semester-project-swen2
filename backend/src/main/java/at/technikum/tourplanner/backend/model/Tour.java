@@ -48,4 +48,10 @@ public class Tour {
 
     @Transient
     private String childFriendliness;
+
+    @Transient
+    private Double avgRating;
+
+    @Transient
+    private Double totalTime;
 }
