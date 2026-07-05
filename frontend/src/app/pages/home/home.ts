@@ -88,7 +88,7 @@ export class Home implements OnInit {
   );
 
   avgRating = computed(() => {
-    const tours = this.state.tours();
+    const tours = this.state.tours().filter((t) => (t.popularity ?? 0) > 0);
     if (tours.length === 0) return 0;
     const sum = tours.reduce((acc, t) => acc + (t.avgRating ?? 0), 0);
     return Math.round((sum / tours.length) * 10) / 10;
