@@ -43,25 +43,23 @@ export class TourService {
   }
 
   // Tour erstellen (POST)
-  createTour(tourData: Omit<Tour, 'id'>): void {
-    this.http.post<Tour>(this.apiUrl, tourData).subscribe({
-      next: (newTour) => {
-        // Backend gibt fertige Tour (mit generierter Datenbank-ID) zurück
+  createTour(tourData: Omit<Tour, 'id'>): Observable<Tour> {
+    return this.http.post<Tour>(this.apiUrl, tourData).pipe(
+      tap((newTour) => {
+        // tap führt Code aus (update), bevor es Ergebnis an Komponente weitergibt
         this.state.addTour(newTour);
-      },
-      error: (err) => console.error('Fehler beim Erstellen der Tour:', err),
-    });
+      })
+    );
   }
 
   // Tour aktualisieren (PUT)
-  updateTour(id: number, tourData: Partial<Tour>): void {
-    this.http.put<Tour>(`${this.apiUrl}/${id}`, tourData).subscribe({
-      next: (updatedTour) => {
+  updateTour(id: number, tourData: Partial<Tour>): Observable<Tour> {
+    return this.http.put<Tour>(`${this.apiUrl}/${id}`, tourData).pipe(
+      tap((updatedTour) => {
         this.state.updateTour(updatedTour);
         this.state.setSelectedTour(updatedTour);
-      },
-      error: (err) => console.error(`Fehler beim Bearbeiten der Tour ${id}:`, err),
-    });
+      })
+    );
   }
 
   // Tour löschen (DELETE)

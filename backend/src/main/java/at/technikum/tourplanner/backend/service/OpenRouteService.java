@@ -1,14 +1,12 @@
 package at.technikum.tourplanner.backend.service;
 
+import org.springframework.http.*;
+import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -52,7 +50,7 @@ public class OpenRouteService {
             double[] endCoords = getCoordinates(end);
             String profile = mapTransportType(transportType);
 
-            // API Key im header
+            // API Key im Header
             String url = UriComponentsBuilder.fromUriString(baseUrl + "/v2/directions/" + profile)
                     .queryParam("start", startCoords[0] + "," + startCoords[1])
                     .queryParam("end", endCoords[0] + "," + endCoords[1])
@@ -71,8 +69,11 @@ public class OpenRouteService {
 
             return data;
 
+        } catch (ResponseStatusException rse) {
+            // 400 Fehler ans Frontend
+            throw rse;
         } catch (Exception e) {
-            log.error("Fehler bei der ORS API Anfrage: {}", e.getMessage());
+            log.error("Allgemeiner Fehler bei der ORS API Anfrage: {}", e.getMessage());
             return null;
         }
     }
@@ -106,7 +107,10 @@ public class OpenRouteService {
 
         JsonNode features = root.path("features");
         if (features.isEmpty()) {
-            throw new Exception("Kein Ergebnis für Location: " + location);
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Der Ort '" + location + "' konnte von der Landkarten-API nicht gefunden werden."
+            );
         }
 
         JsonNode coords = features.get(0).path("geometry").path("coordinates");

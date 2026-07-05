@@ -76,7 +76,7 @@
 //   }
 // }
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { TourService } from '../../services/tour';
 import { TourStateService } from '../../services/tour-state';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -104,6 +104,9 @@ export class TourCreate implements OnInit {
   isEditMode = false;
   editTourId: number | null = null;
 
+  errorMessage = signal<string | null>(null);
+  isLoading = signal<boolean>(false);
+
   tourForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', Validators.required],
@@ -118,7 +121,6 @@ export class TourCreate implements OnInit {
     if (this.editTourId) {
       this.isEditMode = true;
 
-      // getTourById setzt jetzt den State, danach aus State lesen
       this.tourService.getTourById(this.editTourId);
       const tourToEdit = this.tourState.selectedTour();
 
@@ -135,16 +137,46 @@ export class TourCreate implements OnInit {
   }
 
   onSubmit() {
-    if (this.tourForm.valid) {
-      if (this.isEditMode && this.editTourId) {
-        this.tourService.updateTour(this.editTourId, this.tourForm.value as any);
-        this.router.navigate(['/tour', this.editTourId]);
-      } else {
-        this.tourService.createTour(this.tourForm.value as any);
-        this.router.navigate(['/home']);
-      }
-    } else {
+    // Wenn Formular nicht gültig ist, Fehler anzeigen und abbrechen
+    if (this.tourForm.invalid) {
       this.tourForm.markAllAsTouched();
+      return;
+    }
+
+    // isLoading starten und alte Fehler löschen
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    const tourData = this.tourForm.value as any;
+
+    if (this.isEditMode && this.editTourId) {
+      // Bearbeiten
+      this.tourService.updateTour(this.editTourId, tourData).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/tour', this.editTourId]);
+        },
+        error: (err: any) => this.handleError(err) // Fehler an Hilfsmethode leiten
+      });
+    } else {
+      // Neu erstellen
+      this.tourService.createTour(tourData).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/home']);
+        },
+        error: (err: any) => this.handleError(err) // Fehler an Hilfsmethode leiten
+      });
+    }
+  }
+
+  // Hilfsmethode (Fehler-Code nicht zweimal schreiben)
+  private handleError(err: any) {
+    this.isLoading.set(false);
+    if (err.status === 400) {
+      this.errorMessage.set(err.error?.message || 'Start- oder Zielort wurde nicht gefunden.');
+    } else {
+      this.errorMessage.set('Ein unerwarteter Fehler ist aufgetreten. Bitte überprüfe deine Verbindung.');
     }
   }
 }

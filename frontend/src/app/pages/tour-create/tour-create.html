@@ -52,10 +52,20 @@
       <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
 
+    @if (errorMessage()) {
+      <div class="error-banner">
+        ⚠️ {{ errorMessage() }}
+      </div>
+    }
+
     <div class="form-actions">
       <button mat-button type="button" routerLink="/home">Abbrechen</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="tourForm.invalid">
-        {{ isEditMode ? 'Änderungen speichern' : 'Tour speichern'}}
+      
+      <button mat-raised-button 
+              color="primary" 
+              type="submit" 
+              [disabled]="tourForm.invalid || isLoading()">
+        {{ isLoading() ? 'Prüfe Route...' : (isEditMode ? 'Änderungen speichern' : 'Tour speichern') }}
       </button>
     </div>
     
