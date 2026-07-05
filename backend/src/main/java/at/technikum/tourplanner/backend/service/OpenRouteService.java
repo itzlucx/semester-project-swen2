@@ -1,5 +1,6 @@
 package at.technikum.tourplanner.backend.service;
 
+import at.technikum.tourplanner.backend.exception.LocationNotFoundException;
 import org.springframework.http.*;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.JsonNode;
@@ -69,9 +70,8 @@ public class OpenRouteService {
 
             return data;
 
-        } catch (ResponseStatusException rse) {
-            // 400 Fehler ans Frontend
-            throw rse;
+        } catch (LocationNotFoundException lnfe) {
+            throw lnfe;
         } catch (Exception e) {
             log.error("Allgemeiner Fehler bei der ORS API Anfrage: {}", e.getMessage());
             return null;
@@ -107,8 +107,7 @@ public class OpenRouteService {
 
         JsonNode features = root.path("features");
         if (features.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
+            throw new LocationNotFoundException(
                     "Der Ort '" + location + "' konnte von der Landkarten-API nicht gefunden werden."
             );
         }

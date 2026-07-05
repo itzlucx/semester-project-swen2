@@ -1,5 +1,6 @@
 package at.technikum.tourplanner.backend.service;
 
+import at.technikum.tourplanner.backend.exception.TourNotFoundException;
 import at.technikum.tourplanner.backend.model.Tour;
 import at.technikum.tourplanner.backend.model.TourLog;
 import at.technikum.tourplanner.backend.repository.TourRepository;
@@ -78,13 +79,13 @@ public class TourService {
 
                     return savedTour;
                 })
-                .orElseThrow(() -> new RuntimeException("Tour nicht gefunden mit ID: " + id));
+                .orElseThrow(() -> new TourNotFoundException("Tour mit der ID " + id + " wurde nicht gefunden."));
     }
 
     public void deleteTour(Long id) {
         User currentUser = getCurrentUser();
         Tour tour = tourRepository.findByIdAndUser(id, currentUser)
-                .orElseThrow(() -> new RuntimeException("Tour nicht gefunden mit ID: " + id));
+                .orElseThrow(() -> new TourNotFoundException("Tour mit der ID " + id + " wurde nicht gefunden."));
         tourRepository.delete(tour);
     }
 
