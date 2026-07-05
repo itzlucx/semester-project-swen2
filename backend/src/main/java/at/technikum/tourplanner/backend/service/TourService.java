@@ -4,6 +4,7 @@ import at.technikum.tourplanner.backend.exception.TourNotFoundException;
 import at.technikum.tourplanner.backend.model.Tour;
 import at.technikum.tourplanner.backend.model.TourLog;
 import at.technikum.tourplanner.backend.repository.TourRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import at.technikum.tourplanner.backend.model.User;
 import at.technikum.tourplanner.backend.repository.UserRepository;
@@ -15,6 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class TourService {
 
@@ -52,7 +54,11 @@ public class TourService {
     public Tour createTour(Tour tour) {
         tour.setUser(getCurrentUser());
         enrichTourWithRouteData(tour);
-        return tourRepository.save(tour);
+        Tour savedTour = tourRepository.save(tour);
+
+        log.info("Neue Tour erstellt: '{}' (ID: {}) von User: {}", savedTour.getName(), savedTour.getId(), getCurrentUser().getUsername());
+
+        return savedTour;
     }
 
     public Tour updateTour(Long id, Tour updatedTour) {
@@ -87,6 +93,8 @@ public class TourService {
         Tour tour = tourRepository.findByIdAndUser(id, currentUser)
                 .orElseThrow(() -> new TourNotFoundException("Tour mit der ID " + id + " wurde nicht gefunden."));
         tourRepository.delete(tour);
+
+        log.info("Tour gelöscht: '{}' (ID: {}) durch User: {}", tour.getName(), id, currentUser.getUsername());
     }
 
     private void enrichTourWithRouteData(Tour tour) {
