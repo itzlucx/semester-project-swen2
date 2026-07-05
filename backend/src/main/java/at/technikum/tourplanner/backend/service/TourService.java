@@ -106,6 +106,8 @@ public class TourService {
         // Child-Friendliness berechnen
         if (logs.isEmpty()) {
             tour.setChildFriendliness("unknown");
+            tour.setAvgRating(0.0);
+            tour.setTotalTime(0.0);
             return;
         }
 
