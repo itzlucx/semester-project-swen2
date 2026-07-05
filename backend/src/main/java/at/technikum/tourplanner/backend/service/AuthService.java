@@ -3,6 +3,7 @@ package at.technikum.tourplanner.backend.service;
 import at.technikum.tourplanner.backend.config.JwtUtil;
 import at.technikum.tourplanner.backend.dto.AuthRequest;
 import at.technikum.tourplanner.backend.dto.AuthResponse;
+import at.technikum.tourplanner.backend.exception.InvalidCredentialsException;
 import at.technikum.tourplanner.backend.model.User;
 import at.technikum.tourplanner.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +40,10 @@ public class AuthService {
         log.debug("Login attempt for user: {}", request.getUsername());
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new InvalidCredentialsException("Benutzername oder Passwort falsch."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new InvalidCredentialsException("Benutzername oder Passwort falsch.");
         }
 
         String token = jwtUtil.generateToken(user.getUsername());
