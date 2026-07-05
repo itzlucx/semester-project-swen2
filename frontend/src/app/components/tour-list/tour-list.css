@@ -8,19 +8,19 @@
 
 .tour-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
   align-items: stretch;
 }
 
 @media (max-width: 768px) {
   .tour-grid {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
 }
 
 /* ==========================================================================
-   NORMALE TOUR KARTEN (Modern & Clean)
+   NORMALE TOUR KARTEN
    ========================================================================== */
 
 .tour-card {
@@ -37,7 +37,7 @@
 .tour-item-card {
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  border-left: 6px solid #99AD7A; 
+  border-left: 6px solid #99AD7A;
 }
 
 .tour-item-card:hover {
@@ -47,24 +47,26 @@
 }
 
 /* ==========================================================================
-   "NEUE TOUR" KARTE (Gestrichelt & Auffällig)
+   "NEUE TOUR" CARD
    ========================================================================== */
 
 .add-tour-card {
-  background-color: #ffffff !important; 
-  border: 2px dashed #4caf50; 
+  background-color: #ffffff !important;
+  border: 2px dashed #4caf50;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.02) !important;
   cursor: pointer;
   transition: all 0.25s ease;
-  height: 100%; 
+  height: calc(100% - 35px);
+  width: calc(100% - 65px);
+  margin: 20px auto;
 }
 
 .add-tour-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(46, 125, 50, 0.15) !important;
-  background-color: #f4fbf5 !important; 
-  border-color: #2e7d32; 
+  background-color: #f4fbf5 !important;
+  border-color: #2e7d32;
 }
 
 .add-content {
@@ -81,7 +83,7 @@
   font-size: 3.5rem;
   line-height: 1;
   font-weight: 300;
-  color: #4caf50; 
+  color: #4caf50;
   margin-bottom: 0.8rem;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
