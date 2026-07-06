@@ -40,8 +40,12 @@ export class Login {
     }
 
     this.authService.login(this.form.value as any).subscribe({
-      next: () => this.router.navigate(['/home']),
-      error: () => this.errorMessage.set('Ungültiger Benutzername oder Passwort'),
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.errorMessage.set('Ungültiger Benutzername oder Passwort');
+      },
     });
   }
 }

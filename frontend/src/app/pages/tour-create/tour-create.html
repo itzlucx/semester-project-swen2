@@ -52,6 +52,28 @@
       <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
 
+    <div class="image-upload-section">
+  <label for="tour-image">Tour-Bild (Optional)</label>
+  
+  <input type="file" 
+         id="tour-image" 
+         accept="image/*" 
+         (change)="onFileSelected($event)" 
+         #fileInput 
+         style="display: none;">
+  
+  <button mat-stroked-button type="button" (click)="fileInput.click()">
+    📷 Bild auswählen
+  </button>
+
+  @if (imagePreviewUrl()) {
+    <div class="image-preview-container">
+      <img [src]="imagePreviewUrl()" alt="Vorschau des Tour-Bildes" class="upload-preview">
+      <p class="file-name">{{ selectedFile?.name }} ({{ (selectedFile?.size || 0) / 1024 | number:'1.0-0' }} KB)</p>
+    </div>
+  }
+</div>
+
     @if (errorMessage()) {
       <div class="error-banner">
         ⚠️ {{ errorMessage() }}

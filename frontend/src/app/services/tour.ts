@@ -115,4 +115,12 @@ export class TourService {
       error: (err) => console.error('Fehler beim Importieren:', err),
     });
   }
+
+  uploadTourImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    // 'file' muss so heißen wie Parameter im Spring Boot Controller (@RequestParam("file"))
+    formData.append('file', file); 
+
+    return this.http.post<{ url: string }>('http://localhost:8080/api/images/upload', formData);
+  }
 }

@@ -51,6 +51,13 @@
       <button mat-button routerLink="/home">Zurück zur Liste</button>
     </header>
 
+    @if (state.selectedTour()?.imagePath) {
+      <div class="tour-image-banner">
+        <img [src]="'http://localhost:8080' + state.selectedTour()?.imagePath" 
+             alt="Bild der Tour {{ state.selectedTour()?.name }}">
+      </div>
+    }
+
     <div class="map-container" [hidden]="!state.selectedTour()?.routeInformation">
       <div #mapElement style="height: 400px; width: 100%; border-radius: 8px; border: 1px solid #ccc;"></div>
     </div>

@@ -13,4 +13,5 @@ export interface Tour {
   avgRating?: number;
   totalTime?: number;
   mostPopularTour?: string;
+  imagePath?: string;
 }
