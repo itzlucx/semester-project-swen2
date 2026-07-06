@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Tour } from '../models/tour.model';
 import { TourStateService } from '../services/tour-state';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class TourService {
   private http = inject(HttpClient);
 
   // Java-Backend
-  private apiUrl = 'http://localhost:8080/api/tours';
+  private apiUrl = `${environment.apiUrl}/api/tours`;
 
   // Alle Touren laden (GET)
   loadTours(): void {
@@ -48,7 +49,7 @@ export class TourService {
       tap((newTour) => {
         // tap führt Code aus (update), bevor es Ergebnis an Komponente weitergibt
         this.state.addTour(newTour);
-      })
+      }),
     );
   }
 
@@ -58,7 +59,7 @@ export class TourService {
       tap((updatedTour) => {
         this.state.updateTour(updatedTour);
         this.state.setSelectedTour(updatedTour);
-      })
+      }),
     );
   }
 
@@ -119,7 +120,7 @@ export class TourService {
   uploadTourImage(file: File): Observable<{ url: string }> {
     const formData = new FormData();
     // 'file' muss so heißen wie Parameter im Spring Boot Controller (@RequestParam("file"))
-    formData.append('file', file); 
+    formData.append('file', file);
 
     return this.http.post<{ url: string }>('http://localhost:8080/api/images/upload', formData);
   }

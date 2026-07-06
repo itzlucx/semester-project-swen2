@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { TourLog } from '../models/tourlog.model';
 import { TourLogStateService } from './tour-log-state';
 import { TourService } from './tour';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class TourLogService {
   private tourService = inject(TourService);
 
   private apiUrl(tourId: number): string {
-    return `http://localhost:8080/api/tours/${tourId}/logs`;
+    return `${environment.apiUrl}/api/tours/${tourId}/logs`;
   }
 
   loadLogs(tourId: number): void {

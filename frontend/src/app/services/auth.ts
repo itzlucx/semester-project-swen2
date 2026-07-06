@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { AuthRequest, AuthResponse } from '../models/auth.model';
 import { AuthStateService } from './auth-state';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private state = inject(AuthStateService);
 
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = `${environment.apiUrl}/api/auth`;
 
   register(request: AuthRequest): Observable<AuthResponse> {
     return this.http
