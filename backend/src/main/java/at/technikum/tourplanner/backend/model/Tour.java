@@ -54,4 +54,7 @@ public class Tour {
 
     @Transient
     private Double totalTime;
+
+    @Column(name = "image_path")
+    private String imagePath;
 }
